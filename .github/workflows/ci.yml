@@ -1,0 +1,187 @@
+name: CI Automation Tests Outsera
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  ANDROID_PROFILE: Nexus 6
+  ANDROID_TARGET: google_apis
+  ANDROID_API_LEVEL: 28
+  ANDROID_ARCH: x86_64
+  PYTHON_VERSION: '3.9'
+  JAVA_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+  API_LEVEL_TO_INSTALL: '9'
+  NODE_VERSION: '18'
+  PORT: 5000
+  MAVEN_CACHE: maven
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  api-restassured-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Run Maven Tests (RestAssured)
+        run: |
+          cd api_restassured
+          mvn clean install test
+
+      - name: Upload Test Report (RestAssured)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-restassured-report
+          path: api_restassured/target/cucumber-reports/
+
+  e2e-selenium-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Google Chrome
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Run Maven Tests (Selenium)
+        run: |
+          cd e2e_selenium
+          mvn clean install test -Dbrowser=chrome -Dheadless=true
+
+      - name: Upload Test Report (Selenium)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-selenium-report
+          path: e2e_selenium/target/cucumber-reports/
+
+  e2e-appium-android-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      maven_tests: ${{ steps.maven_tests.outcome }}
+
+    steps:
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: ${{ env.MAVEN_CACHE }}
+
+      - name: Build with Maven
+        run: mvn install -DskipTests
+        working-directory: mobile_appium
+
+      - name: Start Appium Server
+        run: |
+          chmod +x mobile_appium/scripts/prepareAppiumServer.sh
+          mobile_appium/scripts/prepareAppiumServer.sh
+
+      - name: Run tests on Android emulators
+        id: maven_tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ env.ANDROID_API_LEVEL }}
+          target: ${{ env.ANDROID_TARGET }}
+          arch: ${{ env.ANDROID_ARCH }}
+          profile: ${{ env.ANDROID_PROFILE }}
+          emulator-boot-timeout: 6000
+          script: |
+           chmod +x mobile_appium/scripts/uploadAPK.sh
+           mobile_appium/scripts/uploadAPK.sh
+
+           mvn -f mobile_appium/pom.xml clean test -Dtest=TestRunner
+
+           echo "Closing connection with emulator-5554"
+           adb -s emulator-5554 emu kill || true
+
+      - name: Upload Cucumber Report (Appium)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-appium-report
+          path: mobile_appium/target/cucumber-reports/
+
+  k6-performance-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (for K6)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install K6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnupg software-properties-common
+          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
+      - name: Setup Python for API
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Python API Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        working-directory: ./k6_performance/app
+
+      - name: Start Flask App for K6
+        run: nohup python aplicativo.py &
+        working-directory: ./k6_performance/app
+        env:
+          PORT: ${{ env.PORT }}
+
+      - name: Run K6 Performance Tests
+        run: |
+          cd k6_performance/k6
+          k6 run load_test.js --out json=test.json
+
+      - name: Upload Test Report (K6)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-html-report
+          path: k6_performance/k6/k6_report.html
+          if-no-files-found: error
