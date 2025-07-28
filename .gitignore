@@ -1,0 +1,9 @@
+*.log
+logs/
+*.project
+*.classpath
+*.settings/
+/api_restassured/target/
+/e2e_selenium/target/
+/mobile_appium/target/
+

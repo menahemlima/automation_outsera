@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Data Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": ["string", "null"],
+      "description": "The name of the user, can be a string or null."
+    },
+    "job": {
+      "type": "string",
+      "description": "The job of the user, expected to be a string."
+    },
+    "id": {
+      "type": "string",
+      "description": "The unique identifier of the user, expected to be a string representing a number."
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of creation in ISO 8601 format."
+    }
+  },
+  "required": ["name", "job", "id", "createdAt"],
+  "additionalProperties": false
+}
