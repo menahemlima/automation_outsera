@@ -210,9 +210,9 @@ k6 run k6/load_test.js
 
 ### Relatório Api
 
-![Sumário relatório api](https://github.com/user-attachments/assets/c7ff99f4-4611-47f6-abcb-eb3d2344fe75)
+<img width="1252" height="586" alt="Image" src="https://github.com/user-attachments/assets/cbce7bd9-3b54-448a-892f-037b4bc31a74" />
 
-![Teste executado](https://github.com/user-attachments/assets/7f5069f9-64a2-4ac4-82c4-98fbd6813793)
+<img width="979" height="495" alt="Image" src="https://github.com/user-attachments/assets/5069a120-085a-4879-b792-8e4db9bb69e7" />
 
 ✅ 09 testes passaram com sucesso.
 
@@ -227,9 +227,9 @@ k6 run k6/load_test.js
 #
 ### Relatório Web
 
-![Sumário relatório Web](https://github.com/user-attachments/assets/08c77190-1e98-40b2-a674-44189c8db3b2)
+<img width="1245" height="503" alt="Image" src="https://github.com/user-attachments/assets/412b3c6b-fb02-4104-8dee-0e07315c986d" />
 
-![Teste executado](https://github.com/user-attachments/assets/5339d2c1-9723-4167-9114-e809f3b7e4f5)
+<img width="1036" height="427" alt="Image" src="https://github.com/user-attachments/assets/08315b16-0811-43e3-97d6-8fb862e96eaf" />
 
 ✅ A execução dos testes foi concluída com êxito, sem a identificação de falhas.
 
@@ -237,9 +237,9 @@ k6 run k6/load_test.js
 
 ### Relatório Mobile
 
-![Sumário relatório mobile](https://github.com/user-attachments/assets/e9de658d-8c9c-4397-a180-bba3b66f4a17)
+<img width="1245" height="512" alt="Image" src="https://github.com/user-attachments/assets/208fc0df-d10b-4cde-97ca-781d52773d84" />
 
-![Teste executado](https://github.com/user-attachments/assets/72e1e499-4761-4e8e-8112-b658f6d2b9f5)
+<img width="951" height="511" alt="Image" src="https://github.com/user-attachments/assets/3c1fda91-6d77-4c38-9f53-e352cb12b967" />
 
 
 ✅ A execução dos testes foi concluída com êxito, sem a identificação de falhas.
@@ -260,7 +260,7 @@ Após execução da CI no github Actions, o relatório de testes podem ser acess
 
 ### Relatório Performance
 
-![Sumário relatório performance](https://github.com/user-attachments/assets/f63eb3bd-10be-4739-9bc3-18743adb7c76)
+<img width="1240" height="761" alt="Image" src="https://github.com/user-attachments/assets/14b90ee3-7c96-451d-94ad-90ec459120fd" />
 
 #
 
