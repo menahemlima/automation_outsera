@@ -22,3 +22,9 @@ Feature: Login
     Examples: 
       | username      | password |
       | standard_user | wrong    |
+      
+   @login
+   Scenario: Failed login with dynamic data
+   Given I had access the login page
+   When I fill the field with username and password dynamic
+   Then I should not be redirected to the page Products

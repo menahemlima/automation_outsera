@@ -10,6 +10,7 @@ import com.automation.web.pages.CheckoutOverviewPage;
 import com.automation.web.pages.ProductsPage;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import com.automation.web.utils.FakeDataGenerator;
 
 public class PurchaseStepDefinitions {
 	private WebDriver driver;
@@ -18,6 +19,8 @@ public class PurchaseStepDefinitions {
 	private CheckoutInformationPage checkoutInformationPage;
 	private CheckoutOverviewPage checkoutOverviewPage;
 	private CheckoutCompletePage checkoutCompletePage;
+	
+	FakeDataGenerator faker = new FakeDataGenerator();
 
 	public PurchaseStepDefinitions() {
 		this.driver = DriverManager.getDriver();
@@ -66,6 +69,24 @@ public class PurchaseStepDefinitions {
 
 		String actualConfirmationMessage = checkoutCompletePage.getConfirmationMessage();
 		Assert.assertEquals("Order confirmation message is incorrect.", messageConfirmation, actualConfirmationMessage);
+	}
+	
+	@When("I complete the checkout process informing user dynamic data")
+	public void iCompleteTheCheckoutProcessInforminUserDynamicData() {
+		double delta = 0.001;
+
+		checkoutInformationPage.enterFirstName(faker.getFirstName());
+		checkoutInformationPage.enterLastName(faker.getLastName());
+		checkoutInformationPage.enterZipCode(faker.getZipCode());
+		checkoutInformationPage.clickContinueButton();
+
+		double calculatedTotal = checkoutOverviewPage.getCalculatedTotal();
+		double totalDisplayed = checkoutOverviewPage.getTotalValue();
+
+		Assert.assertTrue("Not on Checkout Overview page.", checkoutOverviewPage.isOverviewPageDisplayed());
+		Assert.assertEquals("The calculated total does not match the displayed total on the Overview page.",
+				calculatedTotal, totalDisplayed, delta);
+		checkoutOverviewPage.clickFinishButton();
 	}
 
 }

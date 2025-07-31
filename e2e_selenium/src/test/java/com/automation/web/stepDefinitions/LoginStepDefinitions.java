@@ -8,16 +8,19 @@ import com.automation.web.pages.LoginPage;
 import com.automation.web.pages.ProductsPage;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import com.automation.web.utils.FakeDataGenerator;
 
 public class LoginStepDefinitions {
 	private WebDriver driver;
 	private LoginPage loginPage;
 	private ProductsPage productsPage;
+	
+	FakeDataGenerator faker = new FakeDataGenerator();
 
 	public LoginStepDefinitions() {
 		this.driver = DriverManager.getDriver();
 		this.loginPage = new LoginPage(driver);
-		this.productsPage = new ProductsPage(driver);
+		this.productsPage = new ProductsPage(driver);		
 	}
 
 	@When("I fill the field with {string} and {string} valid")
@@ -56,5 +59,10 @@ public class LoginStepDefinitions {
 	public void theMessageShouldBeDisplayed(String expectedMessage) {
 		String actualMessage = loginPage.getErrorMessage();
 		Assert.assertEquals("The displayed error message is incorrect.", expectedMessage, actualMessage);
+	}
+	
+	@When("I fill the field with username and password dynamic")
+	public void iFillTheFieldWithUsernameAndPasswordDynamic() {
+		loginPage.loginOnApp(faker.getName(), faker.getPassword());
 	}
 }
