@@ -84,6 +84,7 @@ k6_performance/
 | :--- | :--- | :--- |
 | *Linguagem* | Java 21 | Desenvolvimento dos testes de API, Web e Mobile. |
 | | JavaScript (ES6+) | Desenvolvimento dos scripts de performance. |
+| | nodeJS (22+) | Instalação de pacotes JS. |
 | | Gherkin | Escrita dos cenários de teste em formato BDD. |
 | *Build & Dependência* | Maven | Gerenciamento de dependências e ciclo de vida dos projetos Java. |
 | *Testes de API* | Rest-Assured | Framework para testes de serviços REST de forma simples em Java. |
@@ -164,18 +165,51 @@ Certifique-se de ter as seguintes ferramentas instaladas e configuradas:
 ```bash
 git clone https://github.com/menahemlima/automation_outsera.git
 ```
-### 3️⃣ Configuração e Execução
-**a) Testes de API, Web, Mobile e K6**
+### 3️⃣ Configuração e Execução Local
+
+a)**Testes API**
+
+Para a realização dos testes de api foi utilizada uma api externa https://reqres.in/
 
 Navegue até a pasta do projeto desejado:
+
 ```bash
-cd api_restassured # ou e2e_selenium, mobile_appium
+cd api_restassured
 ```
-Instale as Dependências (Projetos Java/Maven):
+Instale as Dependências do POM:
+
   ```bash
   mvn clean install
   ```
-Execute os Testes (Projetos Java/Maven):
+Execute os Testes:
+ Executar todos os testes
+
+  ```bash
+mvn clean test
+  ```
+
+Executar testes por tag @regression
+  ```bash
+mvn test -Dcucumber.filter.tags="@regression"
+  ```
+
+Relatório de testes é gerado e salvo na pasta:
+C:\...\git\automation_outsera\api_restassured\target\cucumber-reports
+
+---
+<br>
+
+b) **Testes Web**
+
+Navegue até a pasta do projeto desejado:
+```bash
+cd e2e_selenium
+```
+Instale as Dependências do POM:
+  ```bash
+  mvn clean install
+  ```
+Execute os Testes:
  Executar todos os testes
   ```bash
 mvn clean test
@@ -185,23 +219,153 @@ Executar testes por tag @regression
   ```bash
 mvn test -Dcucumber.filter.tags="@regression"
   ```
-**b) Testes de Performance (k6)**
 
-Navegue até a pasta do projeto
+Relatório de testes é gerado e salvo na pasta:
+C:\...\git\automation_outsera\e2e_selenium\target\cucumber-reports
+
+---
+<br>
+
+ c) **Testes Mobile**
+
+**Prérequisitos:**
+Instalação da configuração 
+
+Siga os passos para instalação correta do NodeJS:
+https://nodejs.org/pt/download
+
+- Windows:
+Instalação do Appium Server:
+```bash
+cd npm install -g appium@latest
+```
+
+ Windows:
+Instalação do UIAutomator2:
+```bash
+cd appium driver install uiautomator2
+```
+
+Siga os passos para instalação correta do Android Studio:
+https://developer.android.com/studio?hl=pt-br
+
+Instale um Device virtual, pode ser o mais atual.
+![Image](https://github.com/user-attachments/assets/645ab70b-8772-4792-a090-e16d66201e1c)
+
+Execução dos testes:
+
+Subir o server do Appium:
+Abra um terminal novo e digite:
+```bash
+appium
+```
+
+![Image](https://github.com/user-attachments/assets/078e7027-1a20-42b5-90ee-33cad72506e4)
+
+Executar o device virtualizado:
+
+![Image](https://github.com/user-attachments/assets/e9f57d7e-b8b5-486d-bf98-4376a9a2a414)
+
+* Caso esteja usando um device atual
+Alterar a propriedades do platform.version = 14
+
+![Image](https://github.com/user-attachments/assets/52f17b93-9711-44a1-8951-7a9c317a469f)
+
+Navegue até a pasta:
+```bash
+cd mobile_appium
+```
+Instale as Dependências do POM:
+  ```bash
+  mvn clean install
+  ```
+Execute os Testes:
+ Executar todos os testes
+  ```bash
+mvn clean test
+  ```
+Executar testes por tag @regression
+
+  ```bash
+mvn test -Dcucumber.filter.tags="@regression"
+  ```
+
+![Image](https://github.com/user-attachments/assets/e473514e-c4a6-4198-89b4-07ffeb6a4f8b)
+
+Relatório de testes é gerado e salvo na pasta:
+C:\...\git\automation_outsera\mobile_appium\target\cucumber-reports
+
+---
+<br>
+
+d) **Testes de Performance (k6)**
+
+**Prérequisitos:**
+
+Instalação do Python
+
+- Windows:
+Siga os passos para instalação correta:
+[Instalação do Python no Windows](https://python.org.br/instalacao-windows/)
+
+- Linux:
+```bash
+sudo apt install python3
+```
+
+### Instalar as dependências do Python
+1. Acesse o diretório do projeto:
+   ```bash
+   C:\...\git\automation_outsera\k6_performance\app
+   ```
+2. Execute o comando:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+Instalar o K6
+
+Prérequisitos:
+Siga os passos para instalação correta do K6, conforme sua escolha:
+https://grafana.com/docs/k6/latest/set-up/install-k6/
+
+- Windows
+Instale utilizando o Chocolatey:
+```bash
+choco install k6 -y
+```
+
+- Linux
+```bash
+sudo apt install -y k6
+```
+
+Executar a aplicação para iniciar os testes
+1. Acesse o repositório do projeto:
+```bash
+cd k6_performance/app
+```
+2. Execute o comando para executar o servidor do app:
+   ```bash
+   python aplicativo.py
+
+Com o aplicativo executando
+
+![Image](https://github.com/user-attachments/assets/17f93a73-7fbc-4767-882b-9b5d704e5799)
+
+Navegue até a pasta:
 
 ```bash
-cd k6_performance
+cd k6_performance/k6
 ```
-Instalar o K6:
-     Execute o comando para instalar o k6 localmente (exemplo, via Chocolatey no Windows):
-```bash
-choco install k6
-```
+
 Execute os Testes:
      Execução Padrão:
 ```bash
-k6 run k6/load_test.js
+k6 run load_test.js
 ```
+Relatório de testes é gerado e salvo na pasta:
+C:\...\git\automation_outsera\k6_performance\k6
 
 ---
 <br>
