@@ -209,7 +209,8 @@ Instale as Dependências do POM:
   ```bash
   mvn clean install
   ```
-Execute os Testes:
+Execução dos testes:
+
  Executar todos os testes
   ```bash
 mvn clean test
@@ -228,7 +229,8 @@ C:\...\git\automation_outsera\e2e_selenium\target\cucumber-reports
 
  c) **Testes Mobile**
 
-**Prérequisitos:**
+**Pré-requisitos:**
+
 Instalação da configuração 
 
 Siga os passos para instalação correta do NodeJS:
@@ -252,7 +254,7 @@ https://developer.android.com/studio?hl=pt-br
 Instale um Device virtual, pode ser o mais atual.
 ![Image](https://github.com/user-attachments/assets/645ab70b-8772-4792-a090-e16d66201e1c)
 
-Execução dos testes:
+**Execução dos testes:**
 
 Subir o server do Appium:
 Abra um terminal novo e digite:
@@ -262,12 +264,14 @@ appium
 
 ![Image](https://github.com/user-attachments/assets/078e7027-1a20-42b5-90ee-33cad72506e4)
 
-Executar o device virtualizado:
+Abrir o device virtualizado:
 
 ![Image](https://github.com/user-attachments/assets/e9f57d7e-b8b5-486d-bf98-4376a9a2a414)
 
 * Caso esteja usando um device atual
 Alterar a propriedades do platform.version = 14
+
+Em: C:\...\git\automation_outsera\mobile_appium\src\test\resources
 
 ![Image](https://github.com/user-attachments/assets/52f17b93-9711-44a1-8951-7a9c317a469f)
 
@@ -279,7 +283,8 @@ Instale as Dependências do POM:
   ```bash
   mvn clean install
   ```
-Execute os Testes:
+**Execução dos testes:**
+
  Executar todos os testes
   ```bash
 mvn clean test
@@ -300,7 +305,7 @@ C:\...\git\automation_outsera\mobile_appium\target\cucumber-reports
 
 d) **Testes de Performance (k6)**
 
-**Prérequisitos:**
+**Pré-requisitos:**
 
 Instalação do Python
 
@@ -325,7 +330,8 @@ sudo apt install python3
 
 Instalar o K6
 
-Prérequisitos:
+**Pré-requisitos:**
+
 Siga os passos para instalação correta do K6, conforme sua escolha:
 https://grafana.com/docs/k6/latest/set-up/install-k6/
 
@@ -353,14 +359,30 @@ Com o aplicativo executando
 
 ![Image](https://github.com/user-attachments/assets/17f93a73-7fbc-4767-882b-9b5d704e5799)
 
+**Observação:** a API não possui Front, os testes são feitos apenas chamando a rota:
+
+http://localhost:5000/predict
+
+com body:
+
+{
+    "input": "i feel radiant bright accomplished and happy"
+}
+
+![Image](https://github.com/user-attachments/assets/e2768e0d-15fc-4f0b-9dc5-bc45de891d22)
+
+Mais exemplos podem ser consultados em:
+C:\...\git\automation_outsera\k6_performance\dataset
+
 Navegue até a pasta:
 
 ```bash
 cd k6_performance/k6
 ```
 
-Execute os Testes:
-     Execução Padrão:
+**Execução dos testes:**
+
+Execução Padrão:
 ```bash
 k6 run load_test.js
 ```
